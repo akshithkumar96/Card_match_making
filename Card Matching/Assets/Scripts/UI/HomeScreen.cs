@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using CardMatching.GamePlay;
 
 namespace CardMatching.UI
 {
@@ -15,7 +16,12 @@ namespace CardMatching.UI
 
         [SerializeField] UIScreenBase gamePlayScreen;
 
-        private int layoutId;
+        [SerializeField] GameAssetScriptableObject gameAssets;
+
+        private void Awake()
+        {
+            Intialize();
+        }
 
         private void OnEnable()
         {
@@ -33,12 +39,35 @@ namespace CardMatching.UI
         {
             gamePlayScreen.Activate();
             Deactivate();
+            (var row, var column) = ExtractBothNumbers(layoutDropDown.options[layoutDropDown.value].text);
+            GameEvent.OnGameStart?.Invoke(row, column);
             //Do play
+        }
+
+        private void Intialize()
+        {
+            layoutDropDown.ClearOptions();
+
+            layoutDropDown.AddOptions(gameAssets.gridLevel);
         }
 
         private void OnDropdownValueChange(int value)
         {
+            //Do something
+        }
 
+        public static (int, int) ExtractBothNumbers(string input)
+        {
+            Debug.Log(input);
+            string[] parts = input.Split('*');
+            if (parts.Length == 2 &&
+                int.TryParse(parts[0], out int firstNumber) &&
+                int.TryParse(parts[1], out int secondNumber))
+            {
+                return (firstNumber, secondNumber);
+            }
+
+            return (0, 0);
         }
     }
 }

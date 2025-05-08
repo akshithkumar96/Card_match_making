@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class UIController : MonoBehaviour
+namespace CardMatching.UI
 {
-    
+    public class UIController : MonoBehaviour
+    {
+
+    }
 }
