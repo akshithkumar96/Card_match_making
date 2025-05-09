@@ -1,4 +1,5 @@
 using CardMatching.GamePlay;
+using CardMatching.Souds;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace CardMatching.UI
 
 
         private GamePlayManager _gamePlayManager;
+        private SoundManager _soundManager;
 
         #region Constants
         private const string GAME_OVER = " GAME OVER";
@@ -68,6 +70,7 @@ namespace CardMatching.UI
             matchText.text = result.matchCount.ToString();
             turnText.text = result.turnCount.ToString();
             resultText.text = VictoryValidation(result) ? VICTORY : GAME_OVER;
+            SoundManager.GetInstance.Play(Souds.AudioType.GameOver);
         }
 
 

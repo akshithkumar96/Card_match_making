@@ -1,4 +1,5 @@
 using CardMatching.Pool;
+using CardMatching.Souds;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +21,14 @@ namespace CardMatching.GamePlay
         private Card firstSelectedCard;
 
         private GamePlayManager _gameplayManager;
+        private SoundManager _soundManager;
 
         private bool _blockInteraction;
 
         private void Awake()
         {
             _gameplayManager = GamePlayManager.GetInstance;
+            _soundManager = SoundManager.GetInstance;
         }
 
         private void OnEnable()
@@ -93,6 +96,7 @@ namespace CardMatching.GamePlay
                 }
                 _blockInteraction = false;
             });
+            _soundManager.Play(Souds.AudioType.Flip);
         }
 
         private void CheckMatch(Card card)
@@ -105,12 +109,14 @@ namespace CardMatching.GamePlay
                 cardPool.Release(card.gameObject);
                 cardPool.Release(firstSelectedCard.gameObject);
                 _gameplayManager.AddMatch();
+                _soundManager.Play(Souds.AudioType.Match);
             }
             else
             {
                 //reset both card
                 firstSelectedCard.Reset();
                 card.Reset();
+                _soundManager.Play(Souds.AudioType.MisMatch);
             }
             _gameplayManager.AddTurn();
             firstSelectedCard = null;
