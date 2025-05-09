@@ -21,11 +21,18 @@ namespace CardMatching.UI
         #endregion
 
 
+        private GamePlayManager _gamePlayManager;
+
         #region Constants
         private const string GAME_OVER = " GAME OVER";
         private const string VICTORY = " VICTORY";
 
         #endregion
+
+        private void Awake()
+        {
+            _gamePlayManager = GamePlayManager.GetInstance;
+        }
 
         private void OnEnable()
         {
@@ -39,7 +46,6 @@ namespace CardMatching.UI
             homeBtn.onClick.RemoveListener(OnHomeBtnClick);
         }
 
-
         private void OnHomeBtnClick()
         {
             homeScreen.Activate();
@@ -48,6 +54,7 @@ namespace CardMatching.UI
 
         private void OnReplayBtnClick()
         {
+            _gamePlayManager.Replay();
             gameplayScreen.Activate();
             Deactivate();
         }

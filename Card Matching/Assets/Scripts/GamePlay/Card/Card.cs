@@ -52,7 +52,12 @@ namespace CardMatching.GamePlay
             IsMatched = false;
             IsFlipped = false;
             image.sprite = _backSprite;
-            _flipController.ShowTransition(0.2f);
+            _flipController.ShowTransition(0.2f, () => { });
+        }
+
+        public void Rellease()
+        {
+            IsMatched = true;
         }
 
         public void SetDetail(int id, Sprite faceSprite, Sprite backSprite)
@@ -72,13 +77,12 @@ namespace CardMatching.GamePlay
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            Debug.Log("clicked ");
             OnCardClick?.Invoke(this);
         }
 
-        public void Flip()
+        public void Flip(Action OnComplete)
         {
-            _flipController.ShowTransition(0.5f);
+            _flipController.ShowTransition(0.5f,OnComplete);
             IsFlipped = true;
         }
 

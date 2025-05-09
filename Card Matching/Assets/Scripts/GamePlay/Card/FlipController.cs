@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,25 +29,27 @@ namespace CardMatching.GamePlay
         {
             this.frontFace = frontFace;
             this.backFace = backFace;
+            isFrontShowing = true;
+            isFlipping = false;
         }
 
-        public void ShowTransition(float duration)
+        public void ShowTransition(float duration, Action onComplete)
         {
             flipDuration = duration;
             if (isFlipping)
                 return;
 
-            StartCoroutine(FlipAnimation());
+            StartCoroutine(FlipAnimation(onComplete));
         }
 
 
-        private IEnumerator FlipAnimation()
+        private IEnumerator FlipAnimation(Action onComplete)
         {
             isFlipping = true;
 
             // Initial rotation and final rotation
             float startRotation = 0;
-            float endRotation = 180;
+            float midRotation = 90;
 
             float elapsedTime = 0;
 
@@ -58,7 +61,7 @@ namespace CardMatching.GamePlay
                 float curveValue = flipCurve.Evaluate(percentComplete);
 
                 // Apply rotation around Y axis
-                float currentRotation = Mathf.Lerp(startRotation, endRotation / 2, curveValue);
+                float currentRotation = Mathf.Lerp(startRotation, midRotation , curveValue);
                 transform.rotation = Quaternion.Euler(0, currentRotation, 0);
 
                 // Make the card narrower as it rotates to simulate perspective
@@ -95,7 +98,7 @@ namespace CardMatching.GamePlay
                 float curveValue = flipCurve.Evaluate(percentComplete);
 
                 // Apply rotation around Y axis
-                float currentRotation = Mathf.Lerp(endRotation / 2, endRotation, curveValue);
+                float currentRotation = Mathf.Lerp(midRotation , startRotation, curveValue);
                 transform.rotation = Quaternion.Euler(0, currentRotation, 0);
 
                 // Make the card wider as it completes the rotation
@@ -107,10 +110,10 @@ namespace CardMatching.GamePlay
             }
 
             // Reset rotation to 0 (or 360, which is the same) to avoid accumulating rotations
-            transform.rotation = Quaternion.Euler(0, 0, 0);
             transform.localScale = Vector3.one; // Reset scale
 
             isFlipping = false;
+            onComplete?.Invoke();
         }
     }
 }

@@ -65,6 +65,7 @@ namespace CardMatching.Pool
                 _maxItem++;
             }
             _activeItems.Add(obj);
+            obj.transform.rotation = Quaternion.Euler(0, 0, 0);
             obj.SetActive(true);
             return obj;
         }
@@ -72,6 +73,7 @@ namespace CardMatching.Pool
         public void Release(GameObject gameObject)
         {
             gameObject.SetActive(false);
+            gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             if (_activeItems.Contains(gameObject))
             {
                 _activeItems.Remove(gameObject);

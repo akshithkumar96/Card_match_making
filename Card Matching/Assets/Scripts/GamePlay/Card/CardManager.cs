@@ -19,15 +19,25 @@ namespace CardMatching.GamePlay
 
         private Card firstSelectedCard;
 
+        private GamePlayManager _gameplayManager;
+
+        private bool _blockInteraction;
+
+        private void Awake()
+        {
+            _gameplayManager = GamePlayManager.GetInstance;
+        }
+
         private void OnEnable()
         {
-            GameEvent.OnGameStart += OnGameStart;
-            GameEvent.GoToHomeScreen += Reset;
+            _gameplayManager.OnGameStart += OnGameStart;
+            _gameplayManager.OnGameOut += ResetCards;
         }
 
         private void OnDisable()
         {
-            GameEvent.OnGameStart -= OnGameStart;
+            _gameplayManager.OnGameStart -= OnGameStart;
+            _gameplayManager.OnGameOut += ResetCards;
         }
 
         private void InitializePool(int maxItem)
@@ -43,7 +53,7 @@ namespace CardMatching.GamePlay
             int maxCard = row * column;
 
             if (!isPoolInitialized) InitializePool(maxCard);
-
+            ResetCards();
             var cardIds = gameGenerator.GenerateCardMatchGame(maxCard, cardDatabase.Count);
 
             for (int i = 0; i < maxCard; i++)
@@ -66,33 +76,55 @@ namespace CardMatching.GamePlay
 
         private void OnCardClicked(Card card)
         {
-            if (card.IsFlipped || card.IsMatched)
+            if (_blockInteraction || card.IsFlipped || card.IsMatched)
             {
                 return;
             }
-
-            card.Flip();
-            if (firstSelectedCard == null)
+            _blockInteraction = true;
+            card.Flip(() =>
             {
-                firstSelectedCard = card;
-            }
-            else
-            {
-                if (firstSelectedCard.ID == card.ID)
+                if (firstSelectedCard == null)
                 {
-                    //its match
+                    firstSelectedCard = card;
                 }
                 else
                 {
-                    //reset both card
+                    CheckMatch(card);
                 }
+                _blockInteraction = false;
+            });
+        }
+
+        private void CheckMatch(Card card)
+        {
+            if (firstSelectedCard.ID == card.ID)
+            {
+                //its match
+                card.Rellease();
+                firstSelectedCard.Rellease();
+                cardPool.Release(card.gameObject);
+                cardPool.Release(firstSelectedCard.gameObject);
+                _gameplayManager.AddMatch();
+            }
+            else
+            {
+                //reset both card
+                firstSelectedCard.Reset();
+                card.Reset();
+            }
+            _gameplayManager.AddTurn();
+            firstSelectedCard = null;
+            if (_gameplayManager.CheckGameOver())
+            {
+                ResetCards();
             }
         }
 
-        private void Reset()
+        private void ResetCards()
         {
             cardPool.ReleaseAll();
             activeCard.Clear();
+            firstSelectedCard = null;
         }
     }
 }

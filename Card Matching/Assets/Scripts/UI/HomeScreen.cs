@@ -18,6 +18,8 @@ namespace CardMatching.UI
 
         [SerializeField] GameAssetScriptableObject gameAssets;
 
+        private GamePlayManager _gamePlayManager;
+
         private void Awake()
         {
             Intialize();
@@ -40,7 +42,7 @@ namespace CardMatching.UI
             gamePlayScreen.Activate();
             Deactivate();
             (var row, var column) = ExtractBothNumbers(layoutDropDown.options[layoutDropDown.value].text);
-            GameEvent.OnGameStart?.Invoke(row, column);
+            _gamePlayManager.StartGame(row, column);
             //Do play
         }
 
@@ -49,6 +51,7 @@ namespace CardMatching.UI
             layoutDropDown.ClearOptions();
 
             layoutDropDown.AddOptions(gameAssets.gridLevel);
+            _gamePlayManager = GamePlayManager.GetInstance;
         }
 
         private void OnDropdownValueChange(int value)
