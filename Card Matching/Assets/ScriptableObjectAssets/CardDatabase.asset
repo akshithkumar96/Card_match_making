@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9c59c4277935c044a02eea61cf0f76a, type: 3}
   m_Name: CardDatabase
   m_EditorClassIdentifier: 
-  CardSpriites:
+  cardSpriites:
   - {fileID: 21300000, guid: 420537a1631877647b740edc3b6b0b21, type: 3}
   - {fileID: 21300000, guid: 210dcaed00c06634094d041180702ca4, type: 3}
   - {fileID: 21300000, guid: 980f1736a2da270479e2ebe9f7bca1f8, type: 3}
@@ -24,4 +24,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 50f7fb85071fe224abe6b88c74029d59, type: 3}
   - {fileID: 21300000, guid: c69e7085fd49cc34aabde81066a33e3c, type: 3}
   - {fileID: 21300000, guid: c20e7794fcf6de04cae49adcbfcaaa6d, type: 3}
-  BackSprite: {fileID: 21300000, guid: 938d4c962c40a704091237c7004c71b8, type: 3}
+  backSprite: {fileID: 21300000, guid: 938d4c962c40a704091237c7004c71b8, type: 3}

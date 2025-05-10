@@ -74,6 +74,8 @@ namespace CardMatching.GamePlay
         /// <param name="column">number of column</param>
         private void OnGameStart(int row, int column)
         {
+            //Initially block the interaction until animation is done
+            _blockInteraction = true;
             //total number of card to spawn for the game
             int maxCard = row * column;
 
@@ -107,6 +109,13 @@ namespace CardMatching.GamePlay
             IGridDistributor gridDistributor = new GridPrefabDistributor(parentTransform, row, column, _activeCard);
             gridDistributor.DistributePrefabs();
 
+            //1 seconds is the wait time ,0.2 is waiting time 
+            Invoke(nameof(UnBlockInteraction), 1.2f);
+        }
+
+        private void UnBlockInteraction()
+        {
+            _blockInteraction = false;
         }
 
         /// <summary>

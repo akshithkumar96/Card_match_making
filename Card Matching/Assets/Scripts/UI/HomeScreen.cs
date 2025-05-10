@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using CardMatching.GamePlay;
+using CardMatching.Saverestore;
 
 namespace CardMatching.UI
 {
@@ -11,12 +12,12 @@ namespace CardMatching.UI
     public class HomeScreen : UIScreenBase
     {
         [SerializeField] Button playBtn;
-
         [SerializeField] TMP_Dropdown layoutDropDown;
-
         [SerializeField] UIScreenBase gamePlayScreen;
-
         [SerializeField] GameAssetScriptableObject gameAssets;
+        [SerializeField] SaveRestoreManager saveRestoreManager;
+        [SerializeField] TMP_Text levelText;
+        [SerializeField] TMP_Text highScore;
 
         private GamePlayManager _gamePlayManager;
 
@@ -29,6 +30,7 @@ namespace CardMatching.UI
         {
             playBtn.onClick.AddListener(OnPlayButtonClick);
             layoutDropDown.onValueChanged.AddListener(OnDropdownValueChange);
+            UpdateUserLevel();
         }
 
         private void OnDisable()
@@ -71,6 +73,13 @@ namespace CardMatching.UI
             }
 
             return (0, 0);
+        }
+
+        public void UpdateUserLevel()
+        {
+            var userLevel = saveRestoreManager.GetLeveldata;
+            highScore.text = userLevel.HighScore.ToString();
+            levelText.text = userLevel.GamePlayed.ToString();
         }
     }
 }

@@ -1074,6 +1074,10 @@ PrefabInstance:
       propertyPath: gamePlayScreen
       value: 
       objectReference: {fileID: 1762101282}
+    - target: {fileID: 4334397146304113477, guid: 55685e2be8466114fb187fdc1e5a0734, type: 3}
+      propertyPath: saveRestoreManager
+      value: 
+      objectReference: {fileID: 2073149210}
     - target: {fileID: 4334397146304113478, guid: 55685e2be8466114fb187fdc1e5a0734, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

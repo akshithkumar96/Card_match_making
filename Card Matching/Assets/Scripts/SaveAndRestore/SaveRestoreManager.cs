@@ -20,14 +20,38 @@ namespace CardMatching.Saverestore
         private ScoreManager _scoreManager;
 
         private UserLevel _userLevel;
+        //To monitar level data intialization
+        private bool _islevelDataInitialized;
+        public UserLevel GetLeveldata
+        {
+            get
+            {
+                if (_islevelDataInitialized)
+                    return _userLevel;
+                else
+                {
+                    InitializeUserLevelData();
+                    return _userLevel;
+                }
+            }
+        }
 
         private void Awake()
         {
+
+            InitializeUserLevelData();
+
+            _gameplayManager = GamePlayManager.GetInstance;
+            _scoreManager = ScoreManager.GetInstance;
+        }
+
+        public void InitializeUserLevelData()
+        {
+            if (_islevelDataInitialized) return;
             // save path where to store the user data
             var savePath = Application.persistentDataPath;
             _saveSystem = new SaveSystem(savePath);
             _restoreSystem = new RestoreSystem(savePath);
-
             _userLevel = _restoreSystem.Load<UserLevel>(SAVE_FILE_NAME);
 
             if (_userLevel == null)
@@ -37,9 +61,7 @@ namespace CardMatching.Saverestore
                 _userLevel.HighScore = 0;
                 _saveSystem.Save<UserLevel>(_userLevel, SAVE_FILE_NAME);
             }
-
-            _gameplayManager = GamePlayManager.GetInstance;
-            _scoreManager = ScoreManager.GetInstance;
+            _islevelDataInitialized = true; 
         }
 
         private void OnEnable()
