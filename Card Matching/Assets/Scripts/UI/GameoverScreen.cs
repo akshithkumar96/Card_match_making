@@ -56,9 +56,9 @@ namespace CardMatching.UI
 
         private void OnReplayBtnClick()
         {
-            _gamePlayManager.Replay();
             gameplayScreen.Activate();
             Deactivate();
+            _gamePlayManager.Replay();
         }
 
         /// <summary>

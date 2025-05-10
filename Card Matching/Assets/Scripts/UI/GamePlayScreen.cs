@@ -19,6 +19,9 @@ namespace CardMatching.UI
         private ScoreManager _scoreManager;
         private GamePlayManager _gameplayManager;
 
+        //refernce for grid level
+        private int _row, _col;
+
         private void Awake()
         {
             _scoreManager = ScoreManager.GetInstance;
@@ -31,6 +34,7 @@ namespace CardMatching.UI
             _scoreManager.OnTurnUpdate += UpdateTurn;
             _scoreManager.OnMatchUpdate += UpdateMatch;
             _gameplayManager.OnGameOver += GoToGameOverScreen;
+            _gameplayManager.OnGameStart += OnGameStart;
         }
 
 
@@ -40,7 +44,22 @@ namespace CardMatching.UI
             homeBtn.onClick.RemoveListener(OnHomeButttonClick);
             _scoreManager.OnTurnUpdate -= UpdateTurn;
             _scoreManager.OnMatchUpdate -= UpdateMatch;
-            _gameplayManager.OnGameOver-= GoToGameOverScreen; ;
+            _gameplayManager.OnGameOver -= GoToGameOverScreen;
+            _gameplayManager.OnGameStart -= OnGameStart;
+        }
+
+        /// <summary>
+        /// Resets 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="colurm"></param>
+        private void OnGameStart(int row, int colurm)
+        {
+            _row = row;
+            _col = colurm;
+            //Reset score
+            UpdateMatch(0);
+            UpdateTurn(0);
         }
 
         private void OnHomeButttonClick()

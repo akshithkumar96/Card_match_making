@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+
 namespace CardMatching.Souds
 {
     /// <summary>
@@ -7,13 +8,16 @@ namespace CardMatching.Souds
     /// </summary>
     public class SoundManager : MonoBehaviour
     {
+        //Audio pair class for serializing type withaudio
         [Serializable]
         private class AudioPair
         {
             public AudioType audioType;
             public AudioClip clip;
         }
-
+        /// <summary>
+        /// Audio pairs
+        /// </summary>
         [SerializeField] AudioPair[] audioPairs;
         [SerializeField] AudioSource audioSource;
 
@@ -43,6 +47,7 @@ namespace CardMatching.Souds
         {
             if (instance == null)
             {
+                //if instance is null set this as  instance
                 instance = this;
                 DontDestroyOnLoad(gameObject);
             }
@@ -53,6 +58,10 @@ namespace CardMatching.Souds
             }
         }
 
+        /// <summary>
+        /// Play the auido
+        /// </summary>
+        /// <param name="audioType"> audio type to play</param>
         public void Play(AudioType audioType)
         {
             var clip = GetAudioClip(audioType);
@@ -65,6 +74,11 @@ namespace CardMatching.Souds
             audioSource.Play();
         }
 
+        /// <summary>
+        /// Get audio from audio type
+        /// </summary>
+        /// <param name="audioType">Audio type </param>
+        /// <returns></returns>
         private AudioClip GetAudioClip(AudioType audioType)
         {
             foreach (var pair in audioPairs)
@@ -76,6 +90,9 @@ namespace CardMatching.Souds
         }
     }
 
+    /// <summary>
+    /// game audio type
+    /// </summary>
     public enum AudioType
     {
         Flip = 0,

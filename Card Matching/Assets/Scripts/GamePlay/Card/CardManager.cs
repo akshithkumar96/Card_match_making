@@ -5,28 +5,40 @@ using UnityEngine;
 
 namespace CardMatching.GamePlay
 {
+    /// <summary>
+    /// Card Manager for card distribution
+    /// </summary>
     public class CardManager : MonoBehaviour
     {
+        //card data base scriptable object
         [SerializeField] CardAssetScriptableObject cardDatabase;
+        //parent transform of where to spawn the cards
         [SerializeField] private RectTransform parentTransform;
-
-        private IPool cardPool;
-        private IGameGenerator gameGenerator;
+        //card prefab reference
         [SerializeField] private Card cardPrefab;
 
-        private List<Card> activeCard;
+        //card pool
+        private IPool _cardPool;
+        //Game grid genrator
+        private IGameGenerator _gameGenerator;
+        //used cards for the game
+        private List<Card> _activeCard;
+        //boolean to check if card pool initialized
+        private bool _isPoolInitialized;
 
-        private bool isPoolInitialized;
+        //first card selected for match
+        private Card _firstSelectedCard;
 
-        private Card firstSelectedCard;
-
+        //Manager gameplay and sound
         private GamePlayManager _gameplayManager;
         private SoundManager _soundManager;
 
+        //block Interaction until we play animation
         private bool _blockInteraction;
 
         private void Awake()
         {
+            //inject the managers
             _gameplayManager = GamePlayManager.GetInstance;
             _soundManager = SoundManager.GetInstance;
         }
@@ -43,94 +55,130 @@ namespace CardMatching.GamePlay
             _gameplayManager.OnGameOut += ResetCards;
         }
 
+        /// <summary>
+        /// Card manager initialization 
+        /// </summary>
+        /// <param name="maxItem"></param>
         private void InitializePool(int maxItem)
         {
-            cardPool = new Pool.Pool(maxItem, cardPrefab.gameObject, parentTransform);
-            isPoolInitialized = true;
-            activeCard = new List<Card>(maxItem);
-            gameGenerator = new CardMatchGameGenerator();
+            _cardPool = new Pool.Pool(maxItem, cardPrefab.gameObject, parentTransform);
+            _isPoolInitialized = true;
+            _activeCard = new List<Card>(maxItem);
+            _gameGenerator = new CardMatchGameGenerator();
         }
 
+        /// <summary>
+        /// On game starts
+        /// </summary>
+        /// <param name="row">number of rows</param>
+        /// <param name="column">number of column</param>
         private void OnGameStart(int row, int column)
         {
+            //total number of card to spawn for the game
             int maxCard = row * column;
 
-            if (!isPoolInitialized) InitializePool(maxCard);
+            //check if pool is not initlized the create one
+            if (!_isPoolInitialized) InitializePool(maxCard);
+            //reset all the cards
             ResetCards();
-            var cardIds = gameGenerator.GenerateCardMatchGame(maxCard, cardDatabase.Count);
+            //Get the card id's to spawn in the game using the generator
+            var cardIds = _gameGenerator.GenerateCardMatchGame(maxCard, cardDatabase.Count);
 
+            //
             for (int i = 0; i < maxCard; i++)
             {
-                var cardObject = cardPool.Fetch();
+                //get the card from poool
+                var cardObject = _cardPool.Fetch();
                 var card = cardObject.GetComponent<Card>();
 
                 if (card == null)
                 {
                     card = cardObject.AddComponent<Card>();
                 }
-                activeCard.Add(card);
+                //add item to card
+                _activeCard.Add(card);
+                //set card details
                 card.SetDetail(cardIds[i], cardDatabase.GetSprite(cardIds[i]), cardDatabase.GetBackSprite);
+                //subscribe to on click event
                 card.OnCardClick += OnCardClicked;
             }
-            IGridDistributor gridDistributor = new GridPrefabDistributor(parentTransform, row, column, activeCard);
+
+            ///After getting all card set its position using grid prefab ditributor
+            IGridDistributor gridDistributor = new GridPrefabDistributor(parentTransform, row, column, _activeCard);
             gridDistributor.DistributePrefabs();
 
         }
 
+        /// <summary>
+        /// Oncard clicked
+        /// </summary>
+        /// <param name="card"></param>
         private void OnCardClicked(Card card)
         {
+            //check if we can open the card
             if (_blockInteraction || card.IsFlipped || card.IsMatched)
             {
                 return;
             }
+            //block the interaction until we play animation 
             _blockInteraction = true;
             card.Flip(() =>
             {
-                if (firstSelectedCard == null)
+                //if no card selected select the first card
+                if (_firstSelectedCard == null)
                 {
-                    firstSelectedCard = card;
+                    _firstSelectedCard = card;
                 }
                 else
                 {
+                    //if second card check for match
                     CheckMatch(card);
                 }
+                //unblock the interaction
                 _blockInteraction = false;
             });
             _soundManager.Play(Souds.AudioType.Flip);
         }
 
+        /// <summary>
+        /// Vefiry if both card are matched or not
+        /// </summary>
+        /// <param name="card"></param>
         private void CheckMatch(Card card)
         {
-            if (firstSelectedCard.ID == card.ID)
+            if (_firstSelectedCard.ID == card.ID)
             {
                 //its match
                 card.Rellease();
-                firstSelectedCard.Rellease();
-                cardPool.Release(card.gameObject);
-                cardPool.Release(firstSelectedCard.gameObject);
+                _firstSelectedCard.Rellease();
+                _cardPool.Release(card.gameObject);
+                _cardPool.Release(_firstSelectedCard.gameObject);
                 _gameplayManager.AddMatch();
                 _soundManager.Play(Souds.AudioType.Match);
             }
             else
             {
                 //reset both card
-                firstSelectedCard.Reset();
+                _firstSelectedCard.Reset();
                 card.Reset();
                 _soundManager.Play(Souds.AudioType.MisMatch);
             }
             _gameplayManager.AddTurn();
-            firstSelectedCard = null;
+            _firstSelectedCard = null;
             if (_gameplayManager.CheckGameOver())
             {
                 ResetCards();
             }
         }
 
+        /// <summary>
+        /// Resets all card 
+        /// </summary>
         private void ResetCards()
         {
-            cardPool.ReleaseAll();
-            activeCard.Clear();
-            firstSelectedCard = null;
+            _cardPool.ReleaseAll();
+            _activeCard.Clear();
+            _firstSelectedCard = null;
         }
     }
 }

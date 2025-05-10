@@ -11,41 +11,50 @@ namespace CardMatching.GamePlay
     public class FlipController : MonoBehaviour, ITransitionEffect
     {
         [SerializeField] private float flipDuration = 0.5f; // Duration of the flip animation
-        [SerializeField] private AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); 
-
-        private Sprite frontFace; // Sprite for the front of the card
-        private Sprite backFace; // Sprite for the back of the card
-
+        [SerializeField] private AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         // Reference to the Image component
         [SerializeField] private Image cardImage;
 
+
+        private Sprite _frontFace; // Sprite for the front of the card
+        private Sprite _backFace; // Sprite for the back of the card
+
         // Track if the card is currently flipping
-        private bool isFlipping = false;
+        private bool _isFlipping = false;
 
         // Track which face is currently showing
-        private bool isFrontShowing = true;
+        private bool _isFrontShowing = true;
 
         public void Initialize(Sprite frontFace, Sprite backFace)
         {
-            this.frontFace = frontFace;
-            this.backFace = backFace;
-            isFrontShowing = true;
-            isFlipping = false;
+            this._frontFace = frontFace;
+            this._backFace = backFace;
+            _isFrontShowing = true;
+            _isFlipping = false;
         }
 
+        /// <summary>
+        /// Play transition animation 
+        /// </summary>
+        /// <param name="duration">animation duration</param>
+        /// <param name="onComplete"> event on complete</param>
         public void ShowTransition(float duration, Action onComplete)
         {
             flipDuration = duration;
-            if (isFlipping)
+            if (_isFlipping)
                 return;
 
             StartCoroutine(FlipAnimation(onComplete));
         }
 
-
+        /// <summary>
+        /// Play flip animation 
+        /// </summary>
+        /// <param name="onComplete"> event on complete</param>
+        /// <returns></returns>
         private IEnumerator FlipAnimation(Action onComplete)
         {
-            isFlipping = true;
+            _isFlipping = true;
 
             // Initial rotation and final rotation
             float startRotation = 0;
@@ -75,17 +84,17 @@ namespace CardMatching.GamePlay
             // Swap the sprite at the midpoint of the animation
             if (cardImage != null)
             {
-                if (isFrontShowing)
+                if (_isFrontShowing)
                 {
-                    cardImage.sprite = backFace;
+                    cardImage.sprite = _backFace;
                 }
                 else
                 {
-                    cardImage.sprite = frontFace;
+                    cardImage.sprite = _frontFace;
                 }
 
                 // Toggle the face state
-                isFrontShowing = !isFrontShowing;
+                _isFrontShowing = !_isFrontShowing;
             }
 
             elapsedTime = 0;
@@ -112,7 +121,7 @@ namespace CardMatching.GamePlay
             // Reset rotation to 0 (or 360, which is the same) to avoid accumulating rotations
             transform.localScale = Vector3.one; // Reset scale
 
-            isFlipping = false;
+            _isFlipping = false;
             onComplete?.Invoke();
         }
     }

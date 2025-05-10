@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 namespace CardMatching.GamePlay
 {
+    /// <summary>
+    /// Individual card script
+    /// </summary>
     public class Card : MonoBehaviour, IPointerClickHandler
     {
 
         #region Serialize fields
-        [SerializeField] RectTransform _rectTransform;
+        [SerializeField] RectTransform rectTransform;
         [SerializeField] Image image;
         #endregion
 
@@ -19,13 +22,14 @@ namespace CardMatching.GamePlay
         //card id
         private int _id;
 
+        //Sprite of card back and front face
         private Sprite _faceSprite;
         private Sprite _backSprite;
 
         /// <summary>
         /// Action event when card gets clicked
         /// </summary>
-        public Action<Card> OnCardClick;
+        public event Action<Card> OnCardClick;
 
 
         #region Properties
@@ -46,7 +50,9 @@ namespace CardMatching.GamePlay
         public bool IsFlipped { get; set; }
         #endregion
 
-
+        /// <summary>
+        /// Reset the card details 
+        /// </summary>
         public void Reset()
         {
             IsMatched = false;
@@ -55,11 +61,20 @@ namespace CardMatching.GamePlay
             _flipController.ShowTransition(0.2f, () => { });
         }
 
+        /// <summary>
+        /// Release the card once after match
+        /// </summary>
         public void Rellease()
         {
             IsMatched = true;
         }
 
+        /// <summary>
+        /// Set the card details
+        /// </summary>
+        /// <param name="id">card id</param>
+        /// <param name="faceSprite">front face sprite</param>
+        /// <param name="backSprite"> card back sprite</param>
         public void SetDetail(int id, Sprite faceSprite, Sprite backSprite)
         {
             _id = id;
@@ -75,32 +90,54 @@ namespace CardMatching.GamePlay
             Invoke(nameof(Reset), 1);
         }
 
+        /// <summary>
+        /// On card clicked
+        /// </summary>
+        /// <param name="eventData"></param>
         public void OnPointerClick(PointerEventData eventData)
         {
             OnCardClick?.Invoke(this);
         }
 
+        /// <summary>
+        /// Flip the card
+        /// </summary>
+        /// <param name="OnComplete"></param>
         public void Flip(Action OnComplete)
         {
             _flipController.ShowTransition(0.5f,OnComplete);
             IsFlipped = true;
         }
 
+        /// <summary>
+        /// Sets anchors
+        /// </summary>
+        /// <param name="anchorMax"> anchor max vector 2</param>
+        /// <param name="achormin"> anchor min Vector 2</param>
+        /// <param name="pivot"> Pivot vector 2</param>
         public void SetAnchor(Vector2 anchorMax, Vector2 achormin, Vector2 pivot)
         {
-            _rectTransform.anchorMin = anchorMax;
-            _rectTransform.anchorMax = anchorMax;
-            _rectTransform.pivot = pivot;
+            rectTransform.anchorMin = anchorMax;
+            rectTransform.anchorMax = anchorMax;
+            rectTransform.pivot = pivot;
         }
 
+        /// <summary>
+        /// Sets anchored position value
+        /// </summary>
+        /// <param name="anchoredPosition"> anchored position vector 2</param>
         public void SetAnchoredPosition(Vector2 anchoredPosition)
         {
-            _rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.anchoredPosition = anchoredPosition;
         }
 
+        /// <summary>
+        /// Sets rect size of card 
+        /// </summary>
+        /// <param name="itemSize">vector 2 size to set</param>
         public void SetSize(Vector2 itemSize)
         {
-            _rectTransform.sizeDelta = itemSize;
+            rectTransform.sizeDelta = itemSize;
         }
     }
 }

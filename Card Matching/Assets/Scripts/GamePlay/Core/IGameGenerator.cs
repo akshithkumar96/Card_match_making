@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace CardMatching.GamePlay
 {
+    /// <summary>
+    /// card list generator
+    /// </summary>
     public interface IGameGenerator
     {
         /// <summary>

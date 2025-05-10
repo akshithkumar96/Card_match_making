@@ -3,24 +3,39 @@ using UnityEngine;
 
 namespace CardMatching
 {
+    /// <summary>
+    /// Card database class for storing all card data
+    /// </summary>
     [CreateAssetMenu(fileName = "CardDatabase", menuName = "ScriptableObjects/CardSpriteDataBase", order = 1)]
     public class CardAssetScriptableObject : ScriptableObject
     {
-        [SerializeField] List<Sprite> CardSpriites;
-        [SerializeField] Sprite BackSprite;
+        /// <summary>
+        /// card sprite collection
+        /// </summary>
+        [SerializeField] List<Sprite> cardSpriites;
+        /// <summary>
+        /// back face sprite
+        /// </summary>
+        [SerializeField] Sprite backSprite;
 
-        public int Count => CardSpriites.Count;
+        public int Count => cardSpriites.Count;
 
-        public Sprite GetBackSprite => BackSprite;
+        //back sprite property
+        public Sprite GetBackSprite => backSprite;
 
+        /// <summary>
+        /// Get the sprite from index
+        /// </summary>
+        /// <param name="index">index of sprite for now its also refred as id</param>
+        /// <returns></returns>
         public Sprite GetSprite(int index)
         {
-            if (index > CardSpriites.Count)
+            if (index > cardSpriites.Count)
             {
                 Debug.Log("Item you are trying to access  isn't available" + index);
                 return null;
             }
-            return CardSpriites[index];
+            return cardSpriites[index];
         }
     }
 }
