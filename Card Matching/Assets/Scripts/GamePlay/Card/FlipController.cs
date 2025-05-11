@@ -41,7 +41,7 @@ namespace CardMatching.GamePlay
         public void ShowTransition(float duration, Action onComplete)
         {
             flipDuration = duration;
-            if (_isFlipping)
+            if (_isFlipping || !gameObject.activeSelf)
                 return;
 
             StartCoroutine(FlipAnimation(onComplete));

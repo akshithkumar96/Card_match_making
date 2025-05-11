@@ -70,6 +70,26 @@ namespace CardMatching.GamePlay
         }
 
         /// <summary>
+        /// On card clicked
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            OnCardClick?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Flip the card
+        /// </summary>
+        /// <param name="OnComplete"></param>
+        public void Flip(Action OnComplete)
+        {
+            _flipController.ShowTransition(0.5f,OnComplete);
+            IsFlipped = true;
+        }
+
+        #region Card Initialization methods
+        /// <summary>
         /// Set the card details
         /// </summary>
         /// <param name="id">card id</param>
@@ -87,26 +107,8 @@ namespace CardMatching.GamePlay
                 _flipController = GetComponent<FlipController>();
             }
             _flipController.Initialize(_faceSprite, _backSprite);
+            //Reset after 1 second
             Invoke(nameof(Reset), 1);
-        }
-
-        /// <summary>
-        /// On card clicked
-        /// </summary>
-        /// <param name="eventData"></param>
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            OnCardClick?.Invoke(this);
-        }
-
-        /// <summary>
-        /// Flip the card
-        /// </summary>
-        /// <param name="OnComplete"></param>
-        public void Flip(Action OnComplete)
-        {
-            _flipController.ShowTransition(0.5f,OnComplete);
-            IsFlipped = true;
         }
 
         /// <summary>
@@ -139,5 +141,6 @@ namespace CardMatching.GamePlay
         {
             rectTransform.sizeDelta = itemSize;
         }
+        #endregion
     }
 }

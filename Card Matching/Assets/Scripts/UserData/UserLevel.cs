@@ -6,6 +6,9 @@ using System;
 
 namespace CardMatching.UserData
 {
+    /// <summary>
+    /// User progress  class 
+    /// </summary>
     [Serializable]
     public class UserLevel
     {
@@ -16,6 +19,7 @@ namespace CardMatching.UserData
         public int HighScore;
         /// <summary>
         /// Total number of games user Completed.
+        /// consider as level 
         /// </summary>
         public int GamePlayed;
     }

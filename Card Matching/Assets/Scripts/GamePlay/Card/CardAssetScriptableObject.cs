@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CardMatching
+namespace CardMatching.GamePlay
 {
     /// <summary>
     /// Card database class for storing all card data

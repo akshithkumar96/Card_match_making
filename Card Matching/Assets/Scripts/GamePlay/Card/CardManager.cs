@@ -10,12 +10,14 @@ namespace CardMatching.GamePlay
     /// </summary>
     public class CardManager : MonoBehaviour
     {
+        #region Serializefields
         //card data base scriptable object
         [SerializeField] CardAssetScriptableObject cardDatabase;
         //parent transform of where to spawn the cards
         [SerializeField] private RectTransform parentTransform;
         //card prefab reference
         [SerializeField] private Card cardPrefab;
+        #endregion
 
         //card pool
         private IPool _cardPool;
@@ -36,6 +38,7 @@ namespace CardMatching.GamePlay
         //block Interaction until we play animation
         private bool _blockInteraction;
 
+        #region Unity callbacks
         private void Awake()
         {
             //inject the managers
@@ -53,7 +56,9 @@ namespace CardMatching.GamePlay
         {
             _gameplayManager.OnGameStart -= OnGameStart;
             _gameplayManager.OnGameOut += ResetCards;
+          
         }
+        #endregion
 
         /// <summary>
         /// Card manager initialization 

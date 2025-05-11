@@ -10,18 +10,22 @@ namespace CardMatching.UI
     /// </summary>
     public class GamePlayScreen : UIScreenBase
     {
+        #region serializeFields
         [SerializeField] Button homeBtn;
         [SerializeField] TMP_Text matchText;
         [SerializeField] TMP_Text turnText;
         [SerializeField] UIScreenBase homeScreen;
         [SerializeField] UIScreenBase gameoverScreen;
+        #endregion
 
+        //manager reference
         private ScoreManager _scoreManager;
         private GamePlayManager _gameplayManager;
 
         //refernce for grid level
-        private int _row, _col;
+        private int _row, _column;
 
+        #region Unity Callback
         private void Awake()
         {
             _scoreManager = ScoreManager.GetInstance;
@@ -37,8 +41,6 @@ namespace CardMatching.UI
             _gameplayManager.OnGameStart += OnGameStart;
         }
 
-
-
         private void OnDisable()
         {
             homeBtn.onClick.RemoveListener(OnHomeButttonClick);
@@ -48,6 +50,8 @@ namespace CardMatching.UI
             _gameplayManager.OnGameStart -= OnGameStart;
         }
 
+        #endregion
+
         /// <summary>
         /// Resets 
         /// </summary>
@@ -56,7 +60,7 @@ namespace CardMatching.UI
         private void OnGameStart(int row, int colurm)
         {
             _row = row;
-            _col = colurm;
+            _column = colurm;
             //Reset score
             UpdateMatch(0);
             UpdateTurn(0);
@@ -89,6 +93,9 @@ namespace CardMatching.UI
             matchText.text = value.ToString();
         }
 
+        /// <summary>
+        /// On Game over go to game over screen
+        /// </summary>
         private void GoToGameOverScreen()
         {
             var gameplayScreen = (GameoverScreen)gameoverScreen;
